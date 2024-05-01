@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="">
+
+<title>Vaccine coverage</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="dashboard_files/libs/clipboard/clipboard.min.js"></script>
+<script src="dashboard_files/libs/quarto-html/quarto.js"></script>
+<script src="dashboard_files/libs/quarto-html/popper.min.js"></script>
+<script src="dashboard_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="dashboard_files/libs/quarto-html/anchor.min.js"></script>
+<link href="dashboard_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="dashboard_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="dashboard_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="dashboard_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="dashboard_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script type="module" src="dashboard_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="dashboard_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Vaccine coverage</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell panel-input card bg-light p-2">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="9" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 8;"><span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>viewof pathogenSelect <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"Tuberculosis"</span><span class="op">,</span> <span class="st">"Diptheria"</span><span class="op">,</span> <span class="st">"Hepatitis B"</span><span class="op">,</span> <span class="st">"Haemophilus influenzae type b"</span><span class="op">,</span> <span class="st">"Mumps"</span><span class="op">,</span> <span class="st">"Meningococcus"</span><span class="op">,</span> <span class="st">"Measles"</span><span class="op">,</span> <span class="st">"Japanese Encephalitis"</span><span class="op">,</span> <span class="st">"Rubella"</span><span class="op">,</span> <span class="st">"Streptococcus pneumoniae"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Pathogen:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="17" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 16;"><span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>vn <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/gadm41_VNM_1_2.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>vn_province <span class="op">=</span> topojson<span class="op">.</span><span class="fu">feature</span>(vn<span class="op">,</span> vn<span class="op">.</span><span class="at">objects</span><span class="op">.</span><span class="at">gadm41_VNM_1</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>coverage_data_province <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/db_coverage_province_vacage.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>coverage_data_all <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/db_coverage_vacage.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>pathogen_province_select <span class="op">=</span> coverage_data_province<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">pathogen</span> <span class="op">===</span> pathogenSelect))</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>pathogen_all_select <span class="op">=</span> coverage_data_all<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">pathogen</span> <span class="op">===</span> pathogenSelect) <span class="op">&amp;</span> (d<span class="op">.</span><span class="at">yob</span> <span class="op">&gt;</span> <span class="dv">2014</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">yob</span> <span class="op">&lt;</span> <span class="dv">2022</span>))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>pathogen_all_select_all <span class="op">=</span> pathogen_all_select<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">vacage_group</span> <span class="op">===</span> <span class="st">"all"</span>))</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>pathogen_all_select_oneyear <span class="op">=</span> pathogen_all_select<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">vacage_group</span> <span class="op">===</span> <span class="st">"(0-1y]"</span>))</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {addTooltips} <span class="im">from</span> <span class="st">"@mkfreeman/plot-tooltip"</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>percent <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">".2%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset nav-pills">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Data</a></li></ul>
+<div class="tab-content nav-pills">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<section id="vaccine-coverage-by-province" class="level3">
+<h3 class="anchored" data-anchor-id="vaccine-coverage-by-province">Vaccine coverage by province</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="41" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 40;"><span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>viewof yearSelect <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">2015</span><span class="op">,</span> <span class="dv">2021</span>]<span class="op">,</span> </span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                                 {<span class="dt">label</span><span class="op">:</span> <span class="st">"Year of birth:"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">2021</span>})</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>viewof vacage_groupSelect <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"(0-1y]"</span><span class="op">,</span> <span class="st">"all"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Age at vaccination:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="48" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 47;"><span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>pathogen_province_select_filter <span class="op">=</span> pathogen_province_select<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">yob</span> <span class="op">===</span> yearSelect) <span class="op">&amp;&amp;</span> (d<span class="op">.</span><span class="at">vacage_group</span> <span class="op">===</span> vacage_groupSelect))</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>pathogen_province_select_filter_map <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>(pathogen_province_select_filter<span class="op">.</span><span class="fu">map</span>(({province<span class="op">,</span> coverage}) <span class="kw">=&gt;</span> [province<span class="op">,</span> coverage]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="54" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 53;"><span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="fu">addTooltips</span>( <span class="co">// Add tooltips</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="dt">projection</span><span class="op">:</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">"mercator"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> vn_province}<span class="op">,</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(vn_province<span class="op">,</span> {</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> pathogen_province_select_filter_map<span class="op">.</span><span class="fu">get</span>(d<span class="op">.</span><span class="at">id</span>)<span class="op">,</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">id</span><span class="sc">}</span><span class="vs"> </span><span class="sc">\n</span><span class="vs"> </span><span class="sc">${</span><span class="fu">percent</span>(pathogen_province_select_filter_map<span class="op">.</span><span class="fu">get</span>(d<span class="op">.</span><span class="at">id</span>))<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>(vn_province<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">"#fff"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">0.5</span>})</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    <span class="dt">scheme</span><span class="op">:</span> <span class="st">"spectral"</span><span class="op">,</span> <span class="co">// Change color scheme</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unknown</span><span class="op">:</span> <span class="st">"#ddd"</span><span class="op">,</span> <span class="co">// Polygons with unknown broadband values are gray</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="co">// Linear scale for color progression</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="co">// Add the legend</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"% of vaccine coverage"</span><span class="op">,</span> <span class="co">// Update legend label</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    <span class="dt">percent</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="co">// Convert value to a percent (from a proportion)</span></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">100</span>] <span class="co">// Update the value domain to span 0 to 100% access</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-5" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</section>
+<section id="vaccine-coverage-by-year-of-birth" class="level3">
+<h3 class="anchored" data-anchor-id="vaccine-coverage-by-year-of-birth">Vaccine coverage by year of birth</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="82" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 81;"><span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="fu">addTooltips</span>( <span class="co">// Add tooltips</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Year of birth"</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Vaccine coverage"</span><span class="op">,</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>    <span class="dt">percent</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])<span class="op">,</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(pathogen_all_select_all<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"yob"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"coverage"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"red"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`Vaccinated at all age`</span>})<span class="op">,</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(pathogen_all_select_oneyear<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"yob"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"coverage"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"blue"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`Vaccinated within the first year of life`</span>})</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</section>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<section id="vaccine-coverage-by-province-1" class="level3">
+<h3 class="anchored" data-anchor-id="vaccine-coverage-by-province-1">Vaccine coverage by province</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="109" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 108;"><span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(pathogen_province_select_filter_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</section>
+<section id="vaccine-coverage-by-year-of-birth-1" class="level3">
+<h3 class="anchored" data-anchor-id="vaccine-coverage-by-year-of-birth-1">Vaccine coverage by year of birth</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="117" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 116;"><span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(pathogen_all_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+
+</main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InZpZXdvZiBwYXRob2dlblNlbGVjdCA9IElucHV0cy5zZWxlY3QoW1wiVHViZXJjdWxvc2lzXCIsIFwiRGlwdGhlcmlhXCIsIFwiSGVwYXRpdGlzIEJcIiwgXCJIYWVtb3BoaWx1cyBpbmZsdWVuemFlIHR5cGUgYlwiLCBcIk11bXBzXCIsIFwiTWVuaW5nb2NvY2N1c1wiLCBcIk1lYXNsZXNcIiwgXCJKYXBhbmVzZSBFbmNlcGhhbGl0aXNcIiwgXCJSdWJlbGxhXCIsIFwiU3RyZXB0b2NvY2N1cyBwbmV1bW9uaWFlXCJdLCB7bGFiZWw6IFwiUGF0aG9nZW46XCJ9KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52biA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9nYWRtNDFfVk5NXzFfMi5qc29uXCIpLmpzb24oKVxudm5fcHJvdmluY2UgPSB0b3BvanNvbi5mZWF0dXJlKHZuLCB2bi5vYmplY3RzLmdhZG00MV9WTk1fMSlcblxuY292ZXJhZ2VfZGF0YV9wcm92aW5jZSA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9kYl9jb3ZlcmFnZV9wcm92aW5jZV92YWNhZ2UuY3N2XCIpLmNzdih7dHlwZWQ6IHRydWV9KVxuY292ZXJhZ2VfZGF0YV9hbGwgPSBGaWxlQXR0YWNobWVudChcImRhdGEvZGJfY292ZXJhZ2VfdmFjYWdlLmNzdlwiKS5jc3Yoe3R5cGVkOiB0cnVlfSlcbnBhdGhvZ2VuX3Byb3ZpbmNlX3NlbGVjdCA9IGNvdmVyYWdlX2RhdGFfcHJvdmluY2UuZmlsdGVyKGQgPT4gKGQucGF0aG9nZW4gPT09IHBhdGhvZ2VuU2VsZWN0KSlcbnBhdGhvZ2VuX2FsbF9zZWxlY3QgPSBjb3ZlcmFnZV9kYXRhX2FsbC5maWx0ZXIoZCA9PiAoZC5wYXRob2dlbiA9PT0gcGF0aG9nZW5TZWxlY3QpICYgKGQueW9iID4gMjAxNCAmJiBkLnlvYiA8IDIwMjIpKVxucGF0aG9nZW5fYWxsX3NlbGVjdF9hbGwgPSBwYXRob2dlbl9hbGxfc2VsZWN0LmZpbHRlcihkID0+IChkLnZhY2FnZV9ncm91cCA9PT0gXCJhbGxcIikpXG5wYXRob2dlbl9hbGxfc2VsZWN0X29uZXllYXIgPSBwYXRob2dlbl9hbGxfc2VsZWN0LmZpbHRlcihkID0+IChkLnZhY2FnZV9ncm91cCA9PT0gXCIoMC0xeV1cIikpXG5cbmltcG9ydCB7YWRkVG9vbHRpcHN9IGZyb20gXCJAbWtmcmVlbWFuL3Bsb3QtdG9vbHRpcFwiXG5wZXJjZW50ID0gZDMuZm9ybWF0KFwiLjIlXCIpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTMiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgeWVhclNlbGVjdCA9IElucHV0cy5yYW5nZShbMjAxNSwgMjAyMV0sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAge2xhYmVsOiBcIlllYXIgb2YgYmlydGg6XCIsIHN0ZXA6IDEsIHZhbHVlOiAyMDIxfSlcbnZpZXdvZiB2YWNhZ2VfZ3JvdXBTZWxlY3QgPSBJbnB1dHMuc2VsZWN0KFtcIigwLTF5XVwiLCBcImFsbFwiXSwge2xhYmVsOiBcIkFnZSBhdCB2YWNjaW5hdGlvbjpcIn0pICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC00IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoicGF0aG9nZW5fcHJvdmluY2Vfc2VsZWN0X2ZpbHRlciA9IHBhdGhvZ2VuX3Byb3ZpbmNlX3NlbGVjdC5maWx0ZXIoZCA9PiAoZC55b2IgPT09IHllYXJTZWxlY3QpICYmIChkLnZhY2FnZV9ncm91cCA9PT0gdmFjYWdlX2dyb3VwU2VsZWN0KSlcblxucGF0aG9nZW5fcHJvdmluY2Vfc2VsZWN0X2ZpbHRlcl9tYXAgPSBuZXcgTWFwKHBhdGhvZ2VuX3Byb3ZpbmNlX3NlbGVjdF9maWx0ZXIubWFwKCh7cHJvdmluY2UsIGNvdmVyYWdlfSkgPT4gW3Byb3ZpbmNlLCBjb3ZlcmFnZV0pKSAgICAgICAgICAgICAgICAgICAgICAgICAgXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmFkZFRvb2x0aXBzKCAvLyBBZGQgdG9vbHRpcHNcblBsb3QucGxvdCh7XG5wcm9qZWN0aW9uOiB7IHR5cGU6IFwibWVyY2F0b3JcIiwgZG9tYWluOiB2bl9wcm92aW5jZX0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5nZW8odm5fcHJvdmluY2UsIHtcbiAgICAgIGZpbGw6IChkKSA9PiBwYXRob2dlbl9wcm92aW5jZV9zZWxlY3RfZmlsdGVyX21hcC5nZXQoZC5pZCksXG4gICAgICB0aXRsZTogKGQpID0+IGAke2QuaWR9IFxcbiAke3BlcmNlbnQocGF0aG9nZW5fcHJvdmluY2Vfc2VsZWN0X2ZpbHRlcl9tYXAuZ2V0KGQuaWQpKX1gXG4gICAgICB9KSxcbiAgICBQbG90Lmdlbyh2bl9wcm92aW5jZSwge3N0cm9rZTogXCIjZmZmXCIsIHN0cm9rZVdpZHRoOiAwLjV9KVxuICBdLFxuICBjb2xvcjoge1xuICAgIHNjaGVtZTogXCJzcGVjdHJhbFwiLCAvLyBDaGFuZ2UgY29sb3Igc2NoZW1lXG4gICAgdW5rbm93bjogXCIjZGRkXCIsIC8vIFBvbHlnb25zIHdpdGggdW5rbm93biBicm9hZGJhbmQgdmFsdWVzIGFyZSBncmF5XG4gICAgdHlwZTogXCJsaW5lYXJcIiwgLy8gTGluZWFyIHNjYWxlIGZvciBjb2xvciBwcm9ncmVzc2lvblxuICAgIGxlZ2VuZDogdHJ1ZSwgLy8gQWRkIHRoZSBsZWdlbmRcbiAgICBsYWJlbDogXCIlIG9mIHZhY2NpbmUgY292ZXJhZ2VcIiwgLy8gVXBkYXRlIGxlZ2VuZCBsYWJlbFxuICAgIHBlcmNlbnQ6IHRydWUsIC8vIENvbnZlcnQgdmFsdWUgdG8gYSBwZXJjZW50IChmcm9tIGEgcHJvcG9ydGlvbilcbiAgICBkb21haW46IFswLCAxMDBdIC8vIFVwZGF0ZSB0aGUgdmFsdWUgZG9tYWluIHRvIHNwYW4gMCB0byAxMDAlIGFjY2Vzc1xuICB9XG59KVxuKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC02IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5hZGRUb29sdGlwcyggLy8gQWRkIHRvb2x0aXBzXG5QbG90LnBsb3Qoe1xuICB4OiB7XG4gICAgbGFiZWw6IFwiWWVhciBvZiBiaXJ0aFwiXG4gIH0sXG4gIHk6IHtcbiAgICBsYWJlbDogXCJWYWNjaW5lIGNvdmVyYWdlXCIsXG4gICAgcGVyY2VudDogdHJ1ZSxcbiAgICBncmlkOiB0cnVlXG4gIH0sXG4gIG1hcmtzOiBbXG4gICAgUGxvdC5ydWxlWShbMF0pLFxuICAgIFBsb3QubGluZShwYXRob2dlbl9hbGxfc2VsZWN0X2FsbCwge3g6IFwieW9iXCIsIHk6IFwiY292ZXJhZ2VcIiwgc3Ryb2tlOiBcInJlZFwiLCB0aXRsZTogKGQpID0+IGBWYWNjaW5hdGVkIGF0IGFsbCBhZ2VgfSksXG4gICAgUGxvdC5saW5lKHBhdGhvZ2VuX2FsbF9zZWxlY3Rfb25leWVhciwge3g6IFwieW9iXCIsIHk6IFwiY292ZXJhZ2VcIiwgc3Ryb2tlOiBcImJsdWVcIiwgdGl0bGU6IChkKSA9PiBgVmFjY2luYXRlZCB3aXRoaW4gdGhlIGZpcnN0IHllYXIgb2YgbGlmZWB9KVxuICBdXG59KVxuKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC03IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5JbnB1dHMudGFibGUocGF0aG9nZW5fcHJvdmluY2Vfc2VsZWN0X2ZpbHRlcl9tYXApXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTgiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbklucHV0cy50YWJsZShwYXRob2dlbl9hbGxfc2VsZWN0KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdwYXRob2dlblNlbGVjdCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCd5ZWFyU2VsZWN0JykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3ZhY2FnZV9ncm91cFNlbGVjdCcpIn1dfQ==
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
