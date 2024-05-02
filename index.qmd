@@ -1,0 +1,124 @@
+---
+title: "Vaccine coverage"
+author: ""
+format: 
+  html:
+    embed-resources: true
+---
+
+```{ojs}
+//| panel: input
+//| echo: false
+viewof pathogenSelect = Inputs.select(["Tuberculosis", "Diptheria", "Hepatitis B", "Haemophilus influenzae type b", "Mumps", "Meningococcus", "Measles", "Japanese Encephalitis", "Rubella", "Streptococcus pneumoniae"], {label: "Pathogen:"})
+```
+
+```{ojs}
+//| output: false
+//| echo: false
+
+vn = FileAttachment("data/gadm41_VNM_1_2.json").json()
+vn_province = topojson.feature(vn, vn.objects.gadm41_VNM_1)
+
+coverage_data_province = FileAttachment("data/db_coverage_province_vacage.csv").csv({typed: true})
+coverage_data_all = FileAttachment("data/db_coverage_vacage.csv").csv({typed: true})
+pathogen_province_select = coverage_data_province.filter(d => (d.pathogen === pathogenSelect))
+pathogen_all_select = coverage_data_all.filter(d => (d.pathogen === pathogenSelect) & (d.yob > 2014 && d.yob < 2022))
+pathogen_all_select_all = pathogen_all_select.filter(d => (d.vacage_group === "all"))
+pathogen_all_select_oneyear = pathogen_all_select.filter(d => (d.vacage_group === "(0-1y]"))
+
+import {addTooltips} from "@mkfreeman/plot-tooltip"
+percent = d3.format(".2%")
+```
+
+
+::: {.panel-tabset .nav-pills}
+
+
+## Plot
+
+### Vaccine coverage by province
+
+```{ojs}
+//| echo: false
+viewof yearSelect = Inputs.range([2015, 2021], 
+                                 {label: "Year of birth:", step: 1, value: 2021})
+viewof vacage_groupSelect = Inputs.select(["(0-1y]", "all"], {label: "Age at vaccination:", value: "all"})                            
+```
+
+```{ojs}
+//| echo: false
+pathogen_province_select_filter = pathogen_province_select.filter(d => (d.yob === yearSelect) && (d.vacage_group === vacage_groupSelect))
+
+pathogen_province_select_filter_map = new Map(pathogen_province_select_filter.map(({province, coverage}) => [province, coverage]))                          
+```
+
+```{ojs}
+//| echo: false
+
+addTooltips( // Add tooltips
+Plot.plot({
+projection: { type: "mercator", domain: vn_province},
+  marks: [
+    Plot.geo(vn_province, {
+      fill: (d) => pathogen_province_select_filter_map.get(d.id),
+      title: (d) => `${d.id} \n ${percent(pathogen_province_select_filter_map.get(d.id))}`
+      }),
+    Plot.geo(vn_province, {stroke: "#fff", strokeWidth: 0.5})
+  ],
+  color: {
+    scheme: "spectral", // Change color scheme
+    unknown: "#ddd", // Polygons with unknown broadband values are gray
+    type: "linear", // Linear scale for color progression
+    legend: true, // Add the legend
+    label: "Vaccine coverage", // Update legend label
+    percent: true, // Convert value to a percent (from a proportion)
+    domain: [0, 100] // Update the value domain to span 0 to 100% access
+  }
+})
+)
+```
+
+### Vaccine coverage by year of birth
+
+```{ojs}
+//| echo: false
+
+addTooltips( // Add tooltips
+Plot.plot({
+  x: {
+    label: "Year of birth"
+  },
+  y: {
+    label: "Vaccine coverage",
+    percent: true,
+    grid: true
+  },
+  marks: [
+    Plot.ruleY([0]),
+    Plot.line(pathogen_all_select_all, {x: "yob", y: "coverage", stroke: "red", title: (d) => `Vaccinated at all age`}),
+    Plot.line(pathogen_all_select_oneyear, {x: "yob", y: "coverage", stroke: "blue", title: (d) => `Vaccinated within the first year of life`})
+  ]
+})
+)
+```
+
+
+## Data
+
+### Vaccine coverage by province
+
+```{ojs}
+//| echo: false
+
+Inputs.table(pathogen_province_select_filter_map)
+```
+
+### Vaccine coverage by year of birth
+
+```{ojs}
+//| echo: false
+
+Inputs.table(pathogen_all_select)
+```
+
+:::
